@@ -16,3 +16,5 @@ The original keybinds for unjam (default F10) and check ammo (default Shift + F)
 
 # To-do:
  - Streamline firemode switch/checking (hold "X" to check, tap "X" to switch, etc.)
+
+ Get the latest release on [Github](https://github.com/ted-hou/OneKey_Reload_Unjam_CheckAmmo/blob/main/README.md?plain=1), or use this link: [OneKey_Reload_Unjam_CheckAmmo_Beta_0.1 ](https://github.com/ted-hou/OneKey_Reload_Unjam_CheckAmmo/releases/tag/beta)
