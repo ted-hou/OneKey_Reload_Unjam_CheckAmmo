@@ -1,8 +1,10 @@
 # Introduction
 A small script for Anomaly G.A.M.M.A 0.9.1 (Christmas Update) to consolidate the keybinds for reload/check ammo/unjam. Assuming your reload key is bind to "R", you can:
  - Tap "R" key to reload.
+ - Double tap "R" to change ammo type.
  - Press and hold "R" key to check ammo.
  - "Shift + R" to unjam weapon (if weapon is functional, will try to play inspection animation).
+
 
 The original keybinds for unjam (default F10) and check ammo (default Shift + F) are still functional. Feel free to unbind them if you'd like.
 
