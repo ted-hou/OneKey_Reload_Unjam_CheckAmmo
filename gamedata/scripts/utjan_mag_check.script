@@ -1,0 +1,116 @@
+local common = animation_common
+
+do_ammo_check_anim = nil
+wpn_checking, det_active = nil
+
+if ammo_check_mcm then
+    base_check_Ammo = ammo_check_mcm.check_Ammo
+    function ammo_check_mcm.check_Ammo()
+        -- if ammo_check_mcm.busy_hands_fix then
+        --     base_check_Ammo()
+        --     return
+        -- end
+
+        if ammo_check_mcm.actor_on_hud_animation_play then
+            printf("!Old mag check script (ammo_check_mcm) detected. Remove it to get full features of mag checks")
+            base_check_Ammo()
+            return
+        end
+
+        local weapon = db.actor:active_item()
+
+        -- ends if no weapon is in hand etc.
+        if (weapon == nil or (not IsWeapon(weapon)) or IsItem("fake_ammo_wpn", nil, weapon)) then
+            base_check_Ammo()
+            return
+        end
+
+        local currentState = weapon:get_state()
+        if not (currentState == 0 or weapon:weapon_in_grenade_mode()) then
+            -- printf("[AC] not playing anim because currentState = %s, weapon_in_grenade_mode = %s", currentState, weapon:weapon_in_grenade_mode())
+            base_check_Ammo()
+            return
+        end
+
+        -- if magazine weapon
+        local currentAmmo = weapon:get_ammo_in_magazine()
+        if (currentAmmo == nil) then
+            -- printf("[AC] not playing anim because currentAmmo = nil")
+            base_check_Ammo()
+            return
+        end
+        
+        -- local anm_ammo_check = common.has_animation(weapon:section(), "anm_ammo_check")
+        local anm_ammo_check = magazine_binder.is_supported_weapon(weapon:section()) or common.has_animation(weapon:section(), "anm_ammo_check")
+        -- anm_ammo_check = true
+        if not anm_ammo_check then
+            -- printf("[AC] not playing anim because is_supported_weapon = %s and has_animation('ammo_check') = %s", magazine_binder.is_supported_weapon(weapon:section()), common.has_animation(weapon:section(), "anm_ammo_check"))
+            local slot = db.actor:active_slot()
+            db.actor:activate_slot(0)
+            weapon_hidden = true
+            CreateTimeEvent("ammo_check", "restore Weapon", 0, function(slot)
+                if db.actor:active_item() then
+                    return false
+                end
+                if not weapon_hidden then
+                    db.actor:activate_slot(slot)
+                    weapon_hidden = false
+                    return true
+                end
+                db.actor:activate_slot(slot)
+
+                return true
+            end
+                , slot)
+            base_check_Ammo()
+            return
+        end
+
+        if do_ammo_check_anim then return end -- If an ammo check is already happening, don't do anything
+
+        base_check_Ammo()
+        do_ammo_check_anim = 1
+        weapon:switch_state(4)
+        det_active = db.actor:active_detector() or nil
+        if det_active then
+            det_active:switch_state(2)
+        end
+    end
+end
+
+-- Catch the inspect weapon state switch and do the ammo check animation instead
+function mag_check_animation(anm_table, obj)
+    if wpn_checking and obj and wpn_checking:id() == obj:id() and do_ammo_check_anim == 2 then
+        wpn_checking = nil
+        do_ammo_check_anim = nil
+
+        if det_active then
+            db.actor:show_detector(true)
+        end
+        det_active = nil
+    end
+
+	if do_ammo_check_anim == 1 and obj and obj:get_state() == 4 then
+        wpn_checking = obj
+
+        local is_supported, has_mag_data
+        if magazine_binder then
+            is_supported = magazine_binder.is_supported_weapon(obj:section())
+            has_mag_data = magazine_binder.get_mag_loaded(obj:id())
+        end
+        if is_supported and not has_mag_data and common.has_animation(obj:section(), "anm_ammo_check_no_mag") then
+            anm_table.anm_name = "anm_ammo_check_no_mag"
+        elseif common.has_animation(obj:section(), "anm_ammo_check") then
+            anm_table.anm_name = "anm_ammo_check"
+        else
+            anm_table.anm_name = "anm_reload"
+        end
+        do_ammo_check_anim = 2
+    end
+end
+
+if ammo_check_mcm and ammo_check_mcm.actor_on_hud_animation_play then
+    printf("!Old mag check script (ammo_check_mcm) detected. Remove it to get full features of mag checks")
+else
+    common.add_anim_mutator(mag_check_animation, 1) -- 0.1 priority was triggering empty reload animations
+end

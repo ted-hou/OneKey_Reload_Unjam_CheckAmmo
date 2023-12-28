@@ -872,7 +872,6 @@ function on_key_hold(key)
 end
 
 function check_ammo_on_weapon_reload()
-	printf("[OneKey] Here!")
 	CreateTimeEvent("magazines_onekey_reload", "ammo_check_on_reload", 0.1, ammo_check_mcm.check_ammo_after_reload)
 end
 
