@@ -850,6 +850,15 @@ function on_before_key_press(key, bind, dis, flags)
 		do_interrupt_magload()
 	end
 	if bind == key_bindings.kWPN_RELOAD then
+		local itm = db.actor:active_item()
+		local slot = db.actor:active_slot()
+		local is_pda = itm and slot == 8 or slot == 14 or false
+
+		if is_pda then
+			flags.ret_value = true
+			return
+		end
+
 		if ui_mcm.MOD_SHIFT then
 			ui_mcm.simple_press("magazines_onekey_press_unjam", key, try_unjam_weapon)
 		else
