@@ -1,14 +1,14 @@
 # Features
 A small script for Anomaly G.A.M.M.A 0.9.1 (Christmas Update) to consolidate some weapon-related keybinds, as well as better ammo check animations:
 
-## Reload Key (default R, change in settings -> controls)
+## Reload/Ammo Check/Unjam/Ammo Type Keybinds (default R, change in settings -> controls)
  - Tap "R" key to reload.
  - Double tap "R" to change ammo type.
  - Press and hold "R" key to check ammo.
  - "Shift + R" to unjam weapon (if weapon is functional, will try to play inspection animation).
 Note: The original keybinds for unjam (default F10) and check ammo (default Shift + F) are still functional. But feel free to unbind them if you'd like.
 
-## Fire mode select key (default X, change in MCM -> One Key)
+## Fire Mode Select Keybinds (default X, change in MCM -> One Key)
  - Tap "X" to select next fire mode
  - "Shift + X" to select previous fire mode
  - Hold "X" to view current fire mode
