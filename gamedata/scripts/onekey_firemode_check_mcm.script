@@ -1,0 +1,133 @@
+local mcm_key = DIK_keys.DIK_X
+local fire_mode_names = { [-1] = "Full-Auto", [1] = "Single", [2] = "Burst", [3] = "Burst" }
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_before_key_press", on_before_key_press)
+    RegisterScriptCallback("on_key_hold", on_key_hold)
+end
+
+function on_mcm_load()
+    ch_options = {
+        id = "onekey",
+        sh = true,
+        gr = {
+            { id = "onekey", type = "slide", link = "ui_options_slider_player", text = "ui_mcm_title_onekey", size = { 512, 50 }, spacing = 20 },            
+            { id = "keybind_firemode", type = "key_bind", val = 2, def = DIK_keys.DIK_X },
+        }
+    }
+    return ch_options
+end
+
+
+function actor_on_first_update()
+    on_option_change()
+end
+
+function on_option_change()
+    if ui_mcm then
+        mcm_key = ui_mcm.get("onekey/keybind_firemode")
+    end
+end
+
+function on_before_key_press(key, bind, dis, flags)
+    if key == mcm_key then
+        if ui_mcm.MOD_SHIFT then
+            ui_mcm.simple_press("onekey_press", key, prev_fire_mode)
+        else
+            ui_mcm.simple_press("onekey_press", key, next_fire_mode)
+        end
+        flags.ret_value = false
+    end
+end
+
+function on_key_hold(key)
+    if key == mcm_key and ui_mcm.key_hold("onekey", key) then
+        show_fire_mode(nil)
+    end
+end
+
+function next_fire_mode()
+    level.press_action(bind_to_dik(key_bindings.kWPN_FIREMODE_NEXT))
+    level.release_action(bind_to_dik(key_bindings.kWPN_FIREMODE_NEXT))
+    show_firemode_delayed()
+end
+
+function prev_fire_mode()
+    level.press_action(bind_to_dik(key_bindings.kWPN_FIREMODE_PREV))
+    level.release_action(bind_to_dik(key_bindings.kWPN_FIREMODE_PREV))
+    show_firemode_delayed()
+end
+
+function show_firemode_delayed()
+    local weapon = db.actor:active_item()
+    if not is_supported_weapon(weapon) then 
+        return 
+    end 
+    if not has_multiple_fire_modes(weapon) then 
+        return 
+    end
+    if not is_weapon_ready(weapon) then
+        return
+    end 
+
+    local old_fire_mode = weapon:cast_Weapon():GetFireMode()
+    CreateTimeEvent("onekey", "show_firemode_delayed", 0, show_fire_mode, old_fire_mode)
+end
+
+function show_fire_mode(old_fire_mode)
+    local weapon = db.actor:active_item()
+    if not is_supported_weapon(weapon) then 
+        return true 
+    end 
+    if not has_multiple_fire_modes(weapon) then 
+        return true 
+    end
+    if not is_weapon_ready(weapon) then
+        return true
+    end 
+    local fire_mode = weapon:cast_Weapon():GetFireMode()
+    -- Waiting for fire-select animation
+    if old_fire_mode ~= nil and fire_mode == old_fire_mode then
+        return false
+    else
+        local message = fire_mode_names[fire_mode]
+        actor_menu.set_msg(1, message, 2)
+        return true
+    end
+end
+
+function is_supported_weapon(wpn)
+    return wpn and IsWeapon(wpn) and (not IsItem("fake_ammo_wpn", wpn:section()))
+end
+
+function is_weapon_ready(wpn)
+    local state = wpn:get_state()
+    return state == 0 -- eIdle
+end
+
+function has_multiple_fire_modes(wpn)
+    section = wpn:section()
+
+    local fire_modes = parse_list(ini_sys, section, "fire_modes")
+
+    if fire_modes and table.getn(fire_modes) > 1 then
+        return true
+    end
+
+    local has_firemode_upgrade = false
+
+    wpn:iterate_installed_upgrades(function(upgr_sec)
+        local upgr_prop_sec = ini_sys:r_string_ex(upgr_sec, "section")
+        if upgr_prop_sec then
+            local upgr_fire_modes = parse_list(ini_sys, upgr_prop_sec, "fire_modes")
+            if upgr_fire_modes and table.getn(upgr_fire_modes) > 1 then
+                has_firemode_upgrade = true
+                return true
+            end
+        end
+    end)
+
+    return has_firemode_upgrade
+end
