@@ -98,9 +98,11 @@ function actor_on_hud_animation_play(anm_table, item)
     local snd_name = get_sound_from_anm(anm_name)
 
 	local snd_value = SYS_GetParam(0, section, snd_name)
+    printf("[AC animation_common] Sound %s = %s, section = %s", snd_name, snd_value, section)
     if not snd_value then 
         snd_name = snd_name:gsub("scripted_snd_", "snd_")
         snd_value = SYS_GetParam(0, section, snd_name)
+        printf("[AC animation_common] Back up sound %s = %s", snd_name, snd_value)
         if not snd_value then return end
     end
 
@@ -122,3 +124,5 @@ end
 function on_game_start()
 	RegisterScriptCallback("actor_on_hud_animation_play",actor_on_hud_animation_play)
 end 
+
+
