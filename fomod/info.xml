@@ -1,3 +1,9 @@
+<fomod> 
+	<Name>One Key</Name>
+	<Author>TedHo</Author> 
+	<Version>beta 0.7</Version>
+	<Website>None</Website> 
+	<Description>
 # Features
 Two quality-of-life modules for Anomaly G.A.M.M.A 0.9.1 (Christmas Update) to consolidate some weapon-related keybinds, as well as better ammo check animations.
 - **The two modules can be installed indepedently or together.**
@@ -26,7 +32,8 @@ Required addons need to be loaded first:
  - 207- Mags Redux (Disable G.A.M.M.A. Unjam Reload) - RavenAscendant
  - 261- Ammo Check - Ishmaeel
  - (Optional, but compatible) Devices of Anomaly Redone
-
-# Download
-- Download the .7z file and install with Mod Organzier. Load this last.
-https://github.com/ted-hou/OneKey_Reload_Unjam_CheckAmmo/releases/tag/beta_0.7		
+	</Description> 
+	<Groups>
+		<element>Gameplay</element>
+	</Groups> 
+</fomod> 

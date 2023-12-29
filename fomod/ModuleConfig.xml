@@ -1,0 +1,50 @@
+<!-- Created with FOMOD Creation Tool 1.7.0.37 [http://www.nexusmods.com/fallout4/mods/6821] --> 
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://qconsulting.ca/fo3/ModConfig5.0.xsd">
+	<moduleName>OneKey</moduleName>
+	<installSteps order="Explicit">
+		<installStep name="Installation">
+			<optionalFileGroups order="Explicit">
+				<group name="OneKey" type="SelectAtLeastOne">
+					<plugins order="Explicit">
+						<plugin name="One Key Reload + Unviersally Animated Ammo Check">
+							<description>## Module 1. One Key Reload + Unviersally Animated Ammo Check
+### One Key Reload: consolidates a few functions onto the reload key (default R)
+- Single-tap R = reload; hold R = ammo check; double-tap R = change ammo type; Shift + R = unjam/inspect
+- Note: you can either use the engine keybind "Reload", or the MCM keybind from this mod.
+- Note: "Ammo Selector" need to be bound to something else (e.g. Y).
+
+### Unviersally Animated Ammo Check
+- For weapons without ammo-check animations, play the reload animation instead. For weapons without magazines, play a lower/raise animation.
+
+Required addons need to be loaded first:
+- 207- Mags Redux (Disable G.A.M.M.A. Unjam Reload) - RavenAscendant
+- 261- Ammo Check - Ishmaeel
+							</description>
+							<image path="" />
+							<files>
+								<folder source="OneKeyReload\gamedata" destination="gamedata" priority="0" />
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+
+						<plugin name="One Key Firemode">
+							<description>## Module 2. One Key Firemode: keybinds consolidated to X by default.
+- Tap X = select next fire mode; Shift + X = select previous fire mode; hold X = check fire mode
+- Note: In game settings -> controls, "Previous Firing Mode" and "Next Firing Mode" need to be bound to something else (e.g. 0 and 9).
+							</description>
+							<image path="" />
+							<files>
+								<folder source="OneKeyFiremode\gamedata" destination="gamedata" priority="0" />
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+					</plugins> 
+				</group>
+			</optionalFileGroups>
+		</installStep>
+	</installSteps>
+</config>
