@@ -237,25 +237,30 @@ function get_ammo_data(weapon, currentAmmo)
         end
 
         local curAmmoPerc = currentAmmo / max_ammo
+        local is_double_barrel = SYS_GetParam(2, sec, "ammo_mag_size", 0) == 2
 
-        if currentAmmo == max_ammo + 1 then
+        -- simple mode for weapons without magazines to only say "loaded" or "empty" (except double-barrel shotguns)
+        if not is_supported_weapon(sec) and not is_double_barrel then
+            message = "Loaded"
+        elseif currentAmmo == max_ammo + 1 then
             message = gc("st_ac_plus1")
             clr = use_clr and clr06_White -- fullest
         elseif (curAmmoPerc > 1) then
             message = gc("st_ac_overfull")
             clr = clrEE_Purple -- always colored this is an error.
-        elseif (currentAmmo == 1 and SYS_GetParam(2, sec, "ammo_mag_size", 0) == 2) then
+        elseif (currentAmmo == 1 and is_double_barrel) then
             message = gc("st_ac_just_one")
             clr = use_clr and clr03_Amber -- last shell in double-barreled shotty
-        elseif currentAmmo == 1 and not mag_data and is_supported_weapon(sec) then
+        elseif currentAmmo == 1 and (not mag_data or (mag_data and #mag_data.loaded == 1)) and is_supported_weapon(sec) then
             message = gc("st_ac_oitc")
-            clr = use_clr and clr00_Red -- last round in the chamber with no maggie
+            clr = use_clr and clr00_Red -- last round in the chamber with no maggie or empty maggie
         else
             idx = l_round((curAmmoPerc * 10) + .5) -- gives an integer value n for the decile of curAmmoPerc and 11 for full.
             print_dbg("IDX is %s %s %s %s", idx, curAmmoPerc, currentAmmo, max_ammo)
             message = messages[idx] and gc(messages[idx].m) or "Error!"
             clr = use_clr and messages[idx] and messages[idx].c or nil
         end
+
         if curAmmoPerc > 0 and top_round then
             if is_supported_weapon(sec) then
                 message = strformat("%s, %srnd %s", message, max_ammo, gc(ui_item.get_sec_short_name(top_round)))
