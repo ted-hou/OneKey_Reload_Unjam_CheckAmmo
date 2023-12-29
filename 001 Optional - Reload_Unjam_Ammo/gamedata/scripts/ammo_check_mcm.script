@@ -296,7 +296,7 @@ function check_ammo_after_reload()
 
     disable_info("sleep_active")
 
-    actor_menu.set_msg(1, message, 2, clr)
+    actor_menu.set_msg(1, "New Mag, " .. message, 2, clr)
     return true
 end
 
