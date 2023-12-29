@@ -33,6 +33,11 @@ end
 
 function on_before_key_press(key, bind, dis, flags)
     if key == mcm_key then
+        local itm = db.actor:active_item()
+        if (itm == nil or (not IsWeapon(itm)) or IsItem("fake_ammo_wpn", nil, itm)) then
+            flags.ret_value = true
+            return
+        end
         if ui_mcm.MOD_SHIFT then
             ui_mcm.simple_press("onekey_press", key, prev_fire_mode)
         else

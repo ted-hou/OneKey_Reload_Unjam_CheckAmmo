@@ -851,13 +851,18 @@ function on_before_key_press(key, bind, dis, flags)
 	end
 	if bind == key_bindings.kWPN_RELOAD then
 		local itm = db.actor:active_item()
-		local slot = db.actor:active_slot()
-		local is_pda = itm and slot == 8 or slot == 14 or false
+		-- local slot = db.actor:active_slot()
+		-- local is_pda = itm and slot == 8 or slot == 14 or false
 
-		if is_pda then
+	    if (itm == nil or (not IsWeapon(itm)) or IsItem("fake_ammo_wpn", nil, itm)) then
 			flags.ret_value = true
-			return
-		end
+	        return
+	    end
+	    
+		-- if is_pda then
+		-- 	flags.ret_value = true
+		-- 	return
+		-- end
 
 		if ui_mcm.MOD_SHIFT then
 			ui_mcm.simple_press("magazines_onekey_press_unjam", key, try_unjam_weapon)
