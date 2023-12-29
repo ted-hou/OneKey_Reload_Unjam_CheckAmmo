@@ -1,5 +1,6 @@
 ----------------------------------------------------------------
 -- Refactored magazines by Arti and Raven. Most of this code is cribbed from wuut_mags original, but cleaned up significantly.
+-- Modified by TedHo, reload key presses are now handled by onekey_reload_mcm. Also performs an ammo-check on reload.
 ----------------------------------------------------------------
 
 --Function alises
@@ -849,40 +850,6 @@ function on_before_key_press(key, bind, dis, flags)
 	if action_state ~= ACTION_NONE and (load_cancel[bind] or key == DIK_keys.DIK_LMENU) then
 		do_interrupt_magload()
 	end
-	if bind == key_bindings.kWPN_RELOAD then
-		local itm = db.actor:active_item()
-		-- local slot = db.actor:active_slot()
-		-- local is_pda = itm and slot == 8 or slot == 14 or false
-
-	    if (itm == nil or (not IsWeapon(itm)) or IsItem("fake_ammo_wpn", nil, itm)) then
-			flags.ret_value = true
-	        return
-	    end
-	    
-		-- if is_pda then
-		-- 	flags.ret_value = true
-		-- 	return
-		-- end
-
-		if ui_mcm.MOD_SHIFT then
-			ui_mcm.simple_press("magazines_onekey_press_unjam", key, try_unjam_weapon)
-		else
-			ui_mcm.simple_press("magazines_onekey_press_reload", key, try_reload_weapon)
-		end
-
-		if ui_mcm.double_tap("magazines_onekey_doubletap_changeammo", key) then
-			level.press_action(bind_to_dik(key_bindings.kWPN_NEXT))
-			level.release_action(bind_to_dik(key_bindings.kWPN_NEXT))
-		end
-		flags.ret_value = false
-	end
-end
-
-function on_key_hold(key)
-	local bind = dik_to_bind(key)
-	if bind == key_bindings.kWPN_RELOAD and ui_mcm.key_hold("magazines_onekey_hold", key) then
-		ammo_check_mcm.check_Ammo()
-	end
 end
 
 function check_ammo_on_weapon_reload()
@@ -1112,7 +1079,6 @@ function on_game_start()
 	RegisterScriptCallback("ActorMenu_on_item_before_move", ActorMenu_on_item_before_move)
 	RegisterScriptCallback("ActorMenu_on_item_focus_receive", ActorMenu_on_item_focus_receive)
 	RegisterScriptCallback("on_before_key_press", on_before_key_press)
-	RegisterScriptCallback("on_key_hold", on_key_hold)
 
 	RegisterScriptCallback("actor_on_weapon_fired", actor_on_weapon_fired)
 	RegisterScriptCallback("actor_on_weapon_jammed", weapon_jammed)

@@ -1,0 +1,68 @@
+local mcm_key_reload = DIK_keys.DIK_R
+local mcm_modifier_unjam = 1
+
+function on_game_start()
+    RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    RegisterScriptCallback("on_before_key_press", on_before_key_press)
+    RegisterScriptCallback("on_key_hold", on_key_hold)
+end
+
+function on_mcm_load()
+    op = {
+        id = "reload",
+        sh = true,
+        gr = {
+            { id = "slide_onekey_reload", type = "slide", link = "ui_options_slider_player", text = "ui_mcm_title_onekey_reload", size = { 512, 50 }, spacing = 20 },            
+            { id = "desc_onekey_reload", type = "desc", text = "ui_mcm_onekey_key_reload_desc" },            
+            { id = "key_reload", type = "key_bind", val = 2, def = DIK_keys.DIK_R, hint = "onekey_key_reload" },
+            { id = "modifier_unjam", type = "radio_h", val = 2, def = 1, hint = "onekey_unjam_modifier", content = { {1,"mcm_kb_mod_shift"} , {2,"mcm_kb_mod_ctrl"}, {3,"mcm_kb_mod_alt"} } },
+        }
+    }
+    return op, "onekey"
+end
+
+function actor_on_first_update()
+    on_option_change()
+end
+
+function on_option_change()
+    if ui_mcm then
+        mcm_key_reload = ui_mcm.get("onekey/reload/keybind_reload")
+        mcm_modifier_unjam = ui_mcm.get("onekey/reload/modifier_unjam")
+    end
+end
+
+function on_before_key_press(key, bind, dis, flags)
+    if bind == key_bindings.kWPN_RELOAD or key == mcm_key_reload then
+        -- passthrough if no weapon active
+        local itm = db.actor:active_item()
+        if (itm == nil or (not IsWeapon(itm)) or IsItem("fake_ammo_wpn", nil, itm)) then
+            flags.ret_value = true
+            return
+        end
+
+        -- Unjam or reload depending on modifier
+        if ui_mcm.get_mod_key(mcm_modifier_unjam) then
+            ui_mcm.simple_press("magazines_onekey_press_unjam", key, magazines.try_unjam_weapon)
+        else
+            ui_mcm.simple_press("magazines_onekey_press_reload", key, magazines.try_reload_weapon)
+        end
+
+        -- Double-tap to ammo-select
+        if ui_mcm.double_tap("magazines_onekey_doubletap_changeammo", key) then
+            level.press_action(bind_to_dik(key_bindings.kWPN_NEXT))
+            level.release_action(bind_to_dik(key_bindings.kWPN_NEXT))
+        end
+        -- Suppress the keypress since it has been handled.
+        flags.ret_value = false
+    end
+end
+
+function on_key_hold(key)
+    local bind = dik_to_bind(key)
+    -- Hold reload key to ammo check
+    if ((bind == key_bindings.kWPN_RELOAD or key == mcm_key_reload) and ui_mcm.key_hold("magazines_onekey_hold", key)) then
+        ammo_check_mcm.check_Ammo()
+    end
+end

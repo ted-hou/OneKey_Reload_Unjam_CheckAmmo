@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="windows-1251"?>
+<string_table>
+    <string id="ui_mcm_menu_onekey">
+        <text>One Key</text>
+    </string>
+    <string id="ui_mcm_menu_reload">
+        <text>Reload</text>
+    </string>
+    <string id="ui_mcm_title_onekey">
+        <text>One Key</text>
+    </string>
+    <string id="ui_mcm_title_onekey_reload">
+        <text>One Key Reload</text>
+    </string>
+    <string id="ui_mcm_onekey_key_reload">
+        <text>Reload Key</text>
+    </string>
+    <string id="ui_mcm_onekey_key_reload_desc">
+        <text>Tap to reload. Hold to check ammo. Double-tap to select ammo type. Modifier + Tap to unjam/inspect. Note 1: the engine "Reload" keybind is equally taken into account by this mod (can be bound to same key). Note 2: Make sure the engine "Ammo Selector" key is still bound to something else (e.g. "Y").</text>
+    </string>
+    <string id="ui_mcm_onekey_unjam_modifier">
+        <text>Unjam/Inspect Modifier</text>
+    </string>
+    <string id="ui_mcm_onekey_unjam_modifier_desc">
+        <text>Modifier + Reload key to unjam or inspect weapon.</text>
+    </string>
+</string_table>
