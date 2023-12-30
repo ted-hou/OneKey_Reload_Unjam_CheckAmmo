@@ -37,17 +37,25 @@ end
 
 function on_before_key_press(key, bind, dis, flags)
     if key == mcm_key_firemode then
-        local itm = db.actor:active_item()
-        if (itm == nil or (not IsWeapon(itm)) or IsItem("fake_ammo_wpn", nil, itm)) then
+        local weapon = db.actor:active_item()
+        if not is_supported_weapon(weapon) then
             flags.ret_value = true
             return
         end
-        if ui_mcm.get_mod_key(mcm_modifier_prevmode) then
-            ui_mcm.simple_press("onekey_press", key, prev_fire_mode)
-        else
-            ui_mcm.simple_press("onekey_press", key, next_fire_mode)
+
+        if is_supported_weapon(weapon) and has_multiple_fire_modes(weapon) and is_weapon_ready(weapon) then
+            local old_fire_mode = weapon:cast_Weapon():GetFireMode()
+
+            if ui_mcm.get_mod_key(mcm_modifier_prevmode) then
+                ui_mcm.simple_press("onekey_press", key, prev_fire_mode, weapon, old_fire_mode)
+            else
+                ui_mcm.simple_press("onekey_press", key, next_fire_mode, weapon, old_fire_mode)
+            end
+            flags.ret_value = false
+            return
         end
-        flags.ret_value = false
+
+        flags.ret_value = true
     end
 end
 
@@ -57,31 +65,15 @@ function on_key_hold(key)
     end
 end
 
-function next_fire_mode()
+function next_fire_mode(weapon, old_fire_mode)
     level.press_action(bind_to_dik(key_bindings.kWPN_FIREMODE_NEXT))
     level.release_action(bind_to_dik(key_bindings.kWPN_FIREMODE_NEXT))
-    show_firemode_delayed()
+    CreateTimeEvent("onekey", "show_firemode_delayed", 0, show_fire_mode, old_fire_mode)
 end
 
-function prev_fire_mode()
+function prev_fire_mode(weapon, old_fire_mode)
     level.press_action(bind_to_dik(key_bindings.kWPN_FIREMODE_PREV))
     level.release_action(bind_to_dik(key_bindings.kWPN_FIREMODE_PREV))
-    show_firemode_delayed()
-end
-
-function show_firemode_delayed()
-    local weapon = db.actor:active_item()
-    if not is_supported_weapon(weapon) then 
-        return 
-    end 
-    if not has_multiple_fire_modes(weapon) then 
-        return 
-    end
-    if not is_weapon_ready(weapon) then
-        return
-    end 
-
-    local old_fire_mode = weapon:cast_Weapon():GetFireMode()
     CreateTimeEvent("onekey", "show_firemode_delayed", 0, show_fire_mode, old_fire_mode)
 end
 
@@ -99,8 +91,10 @@ function show_fire_mode(old_fire_mode)
     local fire_mode = weapon:cast_Weapon():GetFireMode()
     -- Waiting for fire-select animation
     if old_fire_mode ~= nil and fire_mode == old_fire_mode then
+        printf("[OK_FM] waitforanim")
         return false
     else
+        printf("[OK_FM] showingfm")
         local message = fire_mode_names[fire_mode]
         actor_menu.set_msg(1, message, 2)
         return true
