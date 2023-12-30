@@ -332,9 +332,8 @@ function check_Ammo()
     local clr = nil
     message, clr = get_ammo_data(weapon, currentAmmo)
 
-
     -- local anm_ammo_check = common.has_animation(weapon:section(), "anm_ammo_check")
-    local anm_ammo_check = magazine_binder.is_supported_weapon(weapon:section()) or common.has_animation(weapon:section(), "anm_ammo_check")
+    local anm_ammo_check = (not weapon:weapon_in_grenade_mode()) and (magazine_binder.is_supported_weapon(weapon:section()) or common.has_animation(weapon:section(), "anm_ammo_check"))
     -- anm_ammo_check = true
     if not anm_ammo_check then
         print_dbg("Ammo check for %s, playing holster/unholster animation (fallback 2).", weapon:section())
@@ -356,7 +355,7 @@ function check_Ammo()
         end, slot)
 
         disable_info("sleep_active")
-        CreateTimeEvent("ammo_check", "message delay", 1.5, function()
+        CreateTimeEvent("ammo_check", "message delay", 1, function()
             actor_menu.set_msg(1, message, 2, clr)
             return true
         end)
@@ -378,7 +377,7 @@ function check_Ammo()
         do_ammo_check_anim = 1
     else
         print_dbg("Ammo check for %s, playing reload animation (fallback 1).", weapon:section())
-        weapon:switch_state(7)
+        play_reload_animation(weapon)
         do_ammo_check_anim = nil
     end
 
@@ -386,6 +385,35 @@ function check_Ammo()
     if det_active then
         det_active:switch_state(2)
     end
+end
+
+function play_reload_animation(weapon)
+    local wpn_id = weapon:id()
+    local current_magazine = magazine_binder.get_mag_loaded(wpn_id)
+    -- If one in the chamber, reloading will substract a box of ammo and creat a new dummy mag
+    if not current_magazine and magazines.retain_round(weapon) and (weapon:get_ammo_in_magazine() > 0) then
+        local oitc_ammo_sec = magazines.get_sec_chambered(weapon)
+        local oitc_ammo_type = weapon:get_ammo_type()
+        print_dbg("One (%s: %s) in the chamber and no magazine loaded.", oitc_ammo_type, oitc_ammo_sec)   
+        local pre_table = magazines.count_ammo(weapon)
+        weapon:set_ammo_elapsed(0)
+        weapon:switch_state(7)
+        CreateTimeEvent("OneKey_AmmoCheck", "dummy_reload"..wpn_id, 0.1, restore_ammo_after_reload, weapon, 1, pre_table)
+    else
+        local pre_table = magazines.count_ammo(weapon)
+        weapon:switch_state(7)
+        CreateTimeEvent("OneKey_AmmoCheck", "dummy_reload"..wpn_id, 0.1, restore_ammo_after_reload, weapon, weapon:get_ammo_in_magazine(), pre_table)
+    end
+end
+
+function restore_ammo_after_reload(weapon, count, pre_table)
+    if weapon:get_state() == 0 then
+        weapon:set_ammo_elapsed(count)
+        magazines.refund_ammo(weapon, pre_table)
+        print_dbg("Ammo refunded, count = %s.", count)
+        return true
+    end
+    return false
 end
 
 -- Catch the inspect weapon state switch and do the ammo check animation instead
