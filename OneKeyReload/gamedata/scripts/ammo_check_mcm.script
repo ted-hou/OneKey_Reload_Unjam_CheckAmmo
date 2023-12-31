@@ -230,7 +230,12 @@ function get_ammo_data(weapon, currentAmmo)
         elseif is_supported_weapon(sec) then
             print_dbg("checking for section %s", mag_data.section)
             max_ammo = SYS_GetParam(2, mag_data.section, "max_mag_size")
-            top_round = magazines_mcm.get_config("retain_round") and mag_data.loaded[#mag_data.loaded - 1] or stack.peek(mag_data.loaded)
+            if magazines.retain_round(weapon) then
+                top_round = mag_data.loaded[#mag_data.loaded - 1]
+            end
+            if not top_round then
+                top_round = stack.peek(mag_data.loaded)
+            end
         else
             top_round = get_sec_chambered(weapon)
             max_ammo = SYS_GetParam(2, sec, "ammo_mag_size")
@@ -333,7 +338,7 @@ function check_Ammo()
     message, clr = get_ammo_data(weapon, currentAmmo)
 
     -- local anm_ammo_check = common.has_animation(weapon:section(), "anm_ammo_check")
-    local anm_ammo_check = (not weapon:weapon_in_grenade_mode()) and (magazine_binder.is_supported_weapon(weapon:section()) or common.has_animation(weapon:section(), "anm_ammo_check"))
+    local anm_ammo_check = (not weapon:weapon_in_grenade_mode()) and (is_supported_weapon(weapon:section()) or common.has_animation(weapon:section(), "anm_ammo_check"))
     -- anm_ammo_check = true
     if not anm_ammo_check then
         print_dbg("Ammo check for %s, playing holster/unholster animation (fallback 2).", weapon:section())
@@ -389,7 +394,7 @@ end
 
 function play_reload_animation(weapon)
     local wpn_id = weapon:id()
-    local current_magazine = magazine_binder.get_mag_loaded(wpn_id)
+    local current_magazine = get_mag_loaded(wpn_id)
     -- If one in the chamber, reloading will substract a box of ammo and creat a new dummy mag
     if not current_magazine and magazines.retain_round(weapon) and (weapon:get_ammo_in_magazine() > 0) then
         local oitc_ammo_sec = magazines.get_sec_chambered(weapon)
@@ -433,8 +438,8 @@ function mag_check_animation(anm_table, obj)
 
         local is_supported, has_mag_data
         if magazine_binder then
-            is_supported = magazine_binder.is_supported_weapon(obj:section())
-            has_mag_data = magazine_binder.get_mag_loaded(obj:id())
+            is_supported = is_supported_weapon(obj:section())
+            has_mag_data = get_mag_loaded(obj:id())
         end
         if is_supported and not has_mag_data and common.has_animation(obj:section(), "anm_ammo_check_no_mag") then
             anm_table.anm_name = "anm_ammo_check_no_mag"
