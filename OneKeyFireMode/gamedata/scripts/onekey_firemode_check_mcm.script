@@ -91,10 +91,8 @@ function show_fire_mode(old_fire_mode)
     local fire_mode = weapon:cast_Weapon():GetFireMode()
     -- Waiting for fire-select animation
     if old_fire_mode ~= nil and fire_mode == old_fire_mode then
-        printf("[OK_FM] waitforanim")
         return false
     else
-        printf("[OK_FM] showingfm")
         local message = fire_mode_names[fire_mode]
         actor_menu.set_msg(1, message, 2)
         return true
