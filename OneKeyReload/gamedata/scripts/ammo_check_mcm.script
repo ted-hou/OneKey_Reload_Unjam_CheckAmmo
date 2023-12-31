@@ -203,6 +203,7 @@ function get_ammo_data(weapon, currentAmmo)
     local mag_data = get_mag_loaded(weapon:id())
     local message = ""
     local clr = nil
+    local is_simple_weapon = false
 
     -- empty/gl use cases
     if (is_jammed_weapon(weapon)) then
@@ -245,7 +246,8 @@ function get_ammo_data(weapon, currentAmmo)
         local is_double_barrel = SYS_GetParam(2, sec, "ammo_mag_size", 0) == 2
 
         -- simple mode for weapons without magazines to only say "loaded" or "empty" (except double-barrel shotguns)
-        if not is_supported_weapon(sec) and not is_double_barrel then
+        is_simple_weapon = not is_supported_weapon(sec) and not is_double_barrel
+        if is_simple_weapon then
             message = "Loaded"
         elseif currentAmmo == max_ammo + 1 then
             message = gc("st_ac_plus1")
@@ -275,9 +277,8 @@ function get_ammo_data(weapon, currentAmmo)
         end
     end
 
-    return message, clr
+    return message, clr, is_simple_weapon
 end
-
 
 
 function check_ammo_after_reload()
@@ -302,11 +303,15 @@ function check_ammo_after_reload()
     local message = ""
     local clr = nil
 
-    message, clr = get_ammo_data(weapon, currentAmmo)
+    message, clr, is_simple_weapon = get_ammo_data(weapon, currentAmmo)
 
     disable_info("sleep_active")
 
-    actor_menu.set_msg(1, "New Mag, " .. message, 2, clr)
+    if is_simple_weapon then
+        actor_menu.set_msg(1, message, 2, clr)
+    else
+        actor_menu.set_msg(1, "Loaded " .. message, 2, clr)
+    end
     return true
 end
 
