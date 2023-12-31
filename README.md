@@ -7,7 +7,8 @@ Two quality-of-life modules for Anomaly G.A.M.M.A 0.9.1 (Christmas Update) to co
 ### One Key Reload: consolidates a few functions onto the reload key (default R)
 - Single-tap R = reload; hold R = ammo check; double-tap R = change ammo type; Shift + R = unjam/inspect
 - Note: you can either use the engine keybind "Reload", or the MCM keybind from this mod.
-- Note: "Ammo Selector" need to be bound to something else (e.g. Y).
+- Note: double-tap R behavior can be customized in MCM. Default is "Situational", which only opens the ammo wheel UI when you have 3+ types of ammo.
+- Note: "Ammo Selector" can be unbound.
 
 ### Unviersally Animated Ammo Check
 - For weapons without ammo-check animations, play the reload animation instead. For weapons without magazines, play a lower/raise animation.
