@@ -30,6 +30,12 @@
     <string id="ui_mcm_onekey_doubletap_behavior_desc">
         <text>"Reload": perform a regular reload. "Next Type": load next ammo type. "Ammo Wheel": open vanilla ammo selector UI. "Situational": decide automatically depending on how many types of ammo you are carrying.</text>
     </string>
+    <string id="ui_mcm_onekey_check_ammo_after_reload">
+        <text>Check Ammo After Reload</text>
+    </string>
+    <string id="ui_mcm_onekey_check_ammo_after_reload_desc">
+        <text>Turn on to perform an ammo check as you reload.</text>
+    </string>
     <string id="ui_mcm_lst_dt_reload">
         <text>Reload</text>
     </string>

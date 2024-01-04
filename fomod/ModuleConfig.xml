@@ -41,6 +41,31 @@ Required addons need to be loaded first:
 								<type name="Optional"/>
 							</typeDescriptor>
 						</plugin>
+
+						<plugin name="(Optional) Loot Loaded Magazines">
+							<description>Looted magazines has a chance to contain ammo (up to 60% full, dependent on enemy tier)
+							</description>
+							<image path="" />
+							<files>
+								<folder source="Optional_LoadedMagazineLoot\gamedata" destination="gamedata" priority="0" />
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+
+						<plugin name="(Optional) Default Magazine Fixes">
+							<description>Changes the default magazine that comes with some weapons to match match the visual model (mostly for older AK variants). Note that there's still a small chance they'll spawn with fancier (upgraded) magazines.
+Also added magazine support for the ADAR2-15.
+							</description>
+							<image path="" />
+							<files>
+								<folder source="Optional_CorrectDefaultMagazines\gamedata" destination="gamedata" priority="0" />
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
 					</plugins> 
 				</group>
 			</optionalFileGroups>
