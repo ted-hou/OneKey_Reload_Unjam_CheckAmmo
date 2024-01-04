@@ -1,6 +1,7 @@
 local mcm_key_reload = DIK_keys.DIK_R
 local mcm_modifier_unjam = 1
 local mcm_doubletap_behavior = "situational"
+local mcm_check_ammo_after_reload = false
 
 function on_game_start()
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
@@ -14,11 +15,12 @@ function on_mcm_load()
         id = "reload",
         sh = true,
         gr = {
-            { id = "slide_onekey_reload", type = "slide", link = "ui_options_slider_player", text = "ui_mcm_title_onekey_reload", size = { 512, 50 }, spacing = 20 },            
-            { id = "desc_onekey_reload", type = "desc", text = "ui_mcm_onekey_key_reload_desc" },            
-            { id = "key_reload", type = "key_bind", val = 2, def = DIK_keys.DIK_R, hint = "onekey_key_reload" },
-            { id = "modifier_unjam", type = "radio_h", val = 2, def = 1, hint = "onekey_unjam_modifier", content = { {1,"mcm_kb_mod_shift"} , {2,"mcm_kb_mod_ctrl"}, {3,"mcm_kb_mod_alt"} } },
-            { id = "doubletap_behavior", type = "radio_h", val = 0, def = "situational", hint = "onekey_doubletap_behavior", content = { {"reload", "dt_reload"} , {"next_ammo_type", "dt_next_ammo_type"}, {"ammo_wheel", "dt_ammo_wheel"}, {"situational", "dt_situational"} } }
+            {id = "slide_onekey_reload", type = "slide", link = "ui_options_slider_player", text = "ui_mcm_title_onekey_reload", size = {512, 50}, spacing = 20},            
+            {id = "desc_onekey_reload", type = "desc", text = "ui_mcm_onekey_key_reload_desc" },            
+            {id = "key_reload", type = "key_bind", val = 2, def = DIK_keys.DIK_R, hint = "onekey_key_reload" },
+            {id = "modifier_unjam", type = "radio_h", val = 2, def = 1, hint = "onekey_unjam_modifier", content = {{1,"mcm_kb_mod_shift"} , {2,"mcm_kb_mod_ctrl"}, {3,"mcm_kb_mod_alt"}}},
+            {id = "doubletap_behavior", type = "radio_h", val = 0, def = "situational", hint = "onekey_doubletap_behavior", content = {{"reload", "dt_reload"}, {"next_ammo_type", "dt_next_ammo_type"}, {"ammo_wheel", "dt_ammo_wheel"}, {"situational", "dt_situational"}}}
+            {id = "check_ammo_after_reload", type = "check", val = 1, def = false, hint = "onekey_check_ammo_after_reload"}
         }
     }
     return op, "onekey"
@@ -33,6 +35,7 @@ function on_option_change()
         mcm_key_reload = ui_mcm.get("onekey/reload/keybind_reload")
         mcm_modifier_unjam = ui_mcm.get("onekey/reload/modifier_unjam")
         mcm_doubletap_behavior = ui_mcm.get("onekey/reload/doubletap_behavior")
+        mcm_check_ammo_after_reload = ui_mcm.get("onekey/reload/check_ammo_after_reload")
     end
 end
 
@@ -112,7 +115,9 @@ function try_reload_weapon()
     else
         db.actor:reload_weapon()
     end
-    CreateTimeEvent("onekey_reload", "ammo_check_on_reload", 0.1, ammo_check_mcm.check_ammo_after_reload)
+    if mcm_check_ammo_after_reload then
+        CreateTimeEvent("onekey_reload", "ammo_check_on_reload", 0.1, ammo_check_mcm.check_ammo_after_reload)
+    end
 end
 
 -- Ammo type select
@@ -193,7 +198,9 @@ function try_switch_to_ammo_type(weapon, ammo_type)
         weapon:set_ammo_type(ammo_type - 1) -- ammotype is zero-indexed
         db.actor:reload_weapon()
     end
-    CreateTimeEvent("magazines_onekey_reload", "ammo_check_on_reload", 0.2, ammo_check_mcm.check_ammo_after_reload)
+    if mcm_check_ammo_after_reload then
+        CreateTimeEvent("magazines_onekey_reload", "ammo_check_on_reload", 0.2, ammo_check_mcm.check_ammo_after_reload)
+    end
     return true
 end
 
