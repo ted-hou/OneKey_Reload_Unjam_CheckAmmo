@@ -30,4 +30,4 @@ Required addons need to be loaded first:
 
 # Download
 - Download the .7z file and install with Mod Organzier. Load this last.
-https://github.com/ted-hou/OneKey_Reload_Unjam_CheckAmmo/releases/tag/beta_0.7		
+https://github.com/ted-hou/OneKey_Reload_Unjam_CheckAmmo/releases/
