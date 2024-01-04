@@ -448,6 +448,8 @@ function mag_check_animation(anm_table, obj)
         end
         if is_supported and not has_mag_data and common.has_animation(obj:section(), "anm_ammo_check_no_mag") then
             anm_table.anm_name = "anm_ammo_check_no_mag"
+        elseif obj:get_ammo_in_magazine() == 0 and common.has_animation(obj:section(), "anm_ammo_check_empty") then
+            anm_table.anm_name = "anm_ammo_check_empty"
         elseif common.has_animation(obj:section(), "anm_ammo_check") then
             anm_table.anm_name = "anm_ammo_check"
         elseif common.has_animation(obj:section(), "anm_reload") then
