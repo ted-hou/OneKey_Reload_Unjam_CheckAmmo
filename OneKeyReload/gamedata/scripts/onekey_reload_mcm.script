@@ -116,6 +116,10 @@ function try_reload_weapon()
         db.actor:reload_weapon()
     end
     if mcm_check_ammo_after_reload then
+        if (not magazine_binder.is_supported_weapon(weapon)) and (weapon:get_ammo_in_magazine() >= SYS_GetParam(2, weapon:section(), "ammo_mag_size")) then
+            -- Do not ammo check for non-magazined fully loaded weapons (shotguns, revolvers, bolt actions, etc) since those won't be reloaded
+            return
+        end
         CreateTimeEvent("onekey_reload", "ammo_check_on_reload", 0.1, ammo_check_mcm.check_ammo_after_reload)
     end
 end
