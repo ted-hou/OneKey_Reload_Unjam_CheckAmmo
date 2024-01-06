@@ -13,6 +13,9 @@ Two quality-of-life modules for Anomaly G.A.M.M.A 0.9.1 (Christmas Update) to co
 ### Unviersally Animated Ammo Check
 - For weapons without ammo-check animations, play the reload animation instead. For weapons without magazines, play a lower/raise animation.
 
+Disable the following addons:
+- G.A.M.M.A. Unjam Reload
+
 Required addons need to be loaded first:
 - 207- Mags Redux (Disable G.A.M.M.A. Unjam Reload) - RavenAscendant
 - 261- Ammo Check - Ishmaeel

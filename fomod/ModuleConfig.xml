@@ -15,6 +15,9 @@
 ### Unviersally Animated Ammo Check
 - For weapons without ammo-check animations, play the reload animation instead. For weapons without magazines, play a lower/raise animation.
 
+Disable the following addons:
+- G.A.M.M.A. Unjam Reload
+
 Required addons need to be loaded first:
 - 207- Mags Redux (Disable G.A.M.M.A. Unjam Reload) - RavenAscendant
 - 261- Ammo Check - Ishmaeel
@@ -36,6 +39,18 @@ Required addons need to be loaded first:
 							<image path="" />
 							<files>
 								<folder source="OneKeyFiremode\gamedata" destination="gamedata" priority="0" />
+							</files>
+							<typeDescriptor>
+								<type name="Optional"/>
+							</typeDescriptor>
+						</plugin>
+
+						<plugin name="(Optional) MP412 Ammo Check Sound Fix">
+							<description>Fixed an issue with MP412 revolver not playing ammo check audio.
+							</description>
+							<image path="" />
+							<files>
+								<folder source="Optional_MP412AmmoCheckSoundFix\gamedata" destination="gamedata" priority="0" />
 							</files>
 							<typeDescriptor>
 								<type name="Optional"/>
