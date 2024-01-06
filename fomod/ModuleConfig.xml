@@ -45,18 +45,6 @@ Required addons need to be loaded first:
 							</typeDescriptor>
 						</plugin>
 
-						<plugin name="(Optional) MP412 Ammo Check Sound Fix">
-							<description>Fixed an issue with MP412 revolver not playing ammo check audio.
-							</description>
-							<image path="" />
-							<files>
-								<folder source="Optional_MP412AmmoCheckSoundFix\gamedata" destination="gamedata" priority="0" />
-							</files>
-							<typeDescriptor>
-								<type name="Optional"/>
-							</typeDescriptor>
-						</plugin>
-
 						<plugin name="(Optional) Loot Loaded Magazines">
 							<description>Looted magazines has a chance to contain ammo (up to 60% full, dependent on enemy tier)
 							</description>
