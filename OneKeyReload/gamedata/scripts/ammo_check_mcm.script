@@ -386,6 +386,7 @@ function check_Ammo()
         weapon:switch_state(4)
         do_ammo_check_anim = 1
     else
+    -- For weapons without inspection animations, we need to trigger a fake reload and reset the ammo
         print_dbg("Ammo check for %s, playing reload animation (fallback 1).", weapon:section())
         play_reload_animation(weapon)
         do_ammo_check_anim = nil
@@ -452,10 +453,8 @@ function mag_check_animation(anm_table, obj)
             anm_table.anm_name = "anm_ammo_check_empty"
         elseif common.has_animation(obj:section(), "anm_ammo_check") then
             anm_table.anm_name = "anm_ammo_check"
-        elseif common.has_animation(obj:section(), "anm_reload") then
-            anm_table.anm_name = "anm_reload"
         else
-            anm_table.anm_name = "anm_reload_empty"
+            anm_table.anm_name = "anm_reload"
         end
         do_ammo_check_anim = 2
     end
