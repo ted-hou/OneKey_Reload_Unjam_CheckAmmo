@@ -1,6 +1,7 @@
 local mcm_key_firemode = DIK_keys.DIK_X
 local mcm_modifier_prevmode = 1
 local fire_mode_names = { [-1] = "Full-Auto", [1] = "Single", [2] = "Burst", [3] = "Burst" }
+local hide_fire_mode = true
 
 function on_game_start()
     RegisterScriptCallback("actor_on_first_update", actor_on_first_update)
@@ -18,6 +19,7 @@ function on_mcm_load()
             { id = "desc_onekey_firemode", type = "desc", text = "ui_mcm_onekey_key_firemode_desc" },                        
             { id = "key_firemode", type = "key_bind", val = 2, def = DIK_keys.DIK_X, hint = "onekey_key_firemode" },
             { id = "modifier_prev_firemode", type = "radio_h", val = 2, def = 1, hint = "onekey_modifier_prev_firemode", content = { {1,"mcm_kb_mod_shift"} , {2,"mcm_kb_mod_ctrl"}, {3,"mcm_kb_mod_alt"} } },
+            { id = "hide_fire_mode", type = "check", val = 1, def = true, hint = "onekey_hide_fire_mode" },            
         }
     }
     return op, "onekey"
@@ -32,7 +34,11 @@ function on_option_change()
     if ui_mcm then
         mcm_key_firemode = ui_mcm.get("onekey/firemode/key_firemode")
         mcm_modifier_prevmode = ui_mcm.get("onekey/firemode/modifier_prev_firemode")
+        hide_fire_mode = ui_mcm.get("onekey/firemode/hide_fire_mode")
     end
+    pos = ActorMenu.get_maingame().m_ui_hud_states.m_fire_mode:GetWndPos()
+    pos.x = ((hide_fire_mode and pos.x > 0) or ((not hide_fire_mode) and pos.x < 0)) and (-1 * pos.x) or pos.x
+    ActorMenu.get_maingame().m_ui_hud_states.m_fire_mode:SetWndPos(pos)
 end
 
 function on_before_key_press(key, bind, dis, flags)
