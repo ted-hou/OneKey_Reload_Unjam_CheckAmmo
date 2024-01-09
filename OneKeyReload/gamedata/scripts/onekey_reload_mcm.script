@@ -32,7 +32,7 @@ end
 
 function on_option_change()
     if ui_mcm then
-        mcm_key_reload = ui_mcm.get("onekey/reload/keybind_reload")
+        mcm_key_reload = ui_mcm.get("onekey/reload/key_reload")
         mcm_modifier_unjam = ui_mcm.get("onekey/reload/modifier_unjam")
         mcm_doubletap_behavior = ui_mcm.get("onekey/reload/doubletap_behavior")
         mcm_check_ammo_after_reload = ui_mcm.get("onekey/reload/check_ammo_after_reload")
